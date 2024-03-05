@@ -1,0 +1,16 @@
+# Build settings for the frontend
+[build]
+  command = "npm run build"
+  publish = "frontend/build"
+
+# Proxy settings for redirecting API requests to the backend
+[[redirects]]
+  from = "/api/*"
+  to = "http://localhost:5000/:splat"
+  status = 200
+
+# Settings for headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
