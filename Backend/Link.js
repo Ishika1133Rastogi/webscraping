@@ -4,9 +4,15 @@ const linkSchema = new mongoose.Schema({
     children: [
         {  
         type: mongoose.Schema.Types.ObjectId,  
-        ref: 'Linkdata22313456'  
+        ref: 'Link_data'  
     }
     ]
 });
-const Linkdata22313456= mongoose.model('Linkdata22313456', linkSchema);
-module.exports = Linkdata22313456;
+const Link_data= mongoose.model('Link_data', linkSchema);
+module.exports = Link_data;
+
+
+
+
+
+

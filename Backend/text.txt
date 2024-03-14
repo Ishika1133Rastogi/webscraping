@@ -81,3 +81,24 @@
 // app.listen(5000, () => {
 //     console.log('Server running on http://localhost:5000');
 // });
+
+
+
+
+<button onClick={() => setDisplayUrls(!displayUrls)}>
+        {displayUrls ? 'Hide URLs' : 'Show URLs'}
+      </button>
+    {displayUrls && (
+      <div className="scraped-urls-container">
+  <h2 className="scraped-urls-header">Scraped URLs</h2>
+  <ul className="scraped-urls-list">
+    {urls.map((url, index) => (
+      <li key={index} className="scraped-urls-list-item">
+        <a href={url.url} target="_blank" rel="noopener noreferrer">
+          {url.url}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+    )}
