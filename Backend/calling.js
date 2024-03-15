@@ -14,6 +14,7 @@ const request = require('request-promise');
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json()); 
 PORT = process.env.PORT||5002; 
+const DB = process.env.DATABASE;
 app.use(bodyParser.json()); 
 const fs = require('fs'); 
 const { URL } = require('url');
@@ -24,7 +25,7 @@ const cheerio = require('cheerio');
 //DATABASE
 
 try {
-  mongoose.connect('mongodb+srv://ishikarastogi57:teena123@cluster0.8xhkhkk.mongodb.net/webScraper?retryWrites=true&w=majority&appName=Cluster0', {
+  mongoose.connect(DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   });
@@ -33,11 +34,32 @@ try {
  console.log(`❌ Error connecting to database: ${DB}`, error);
 }
 
+
 const urlSchema = new mongoose.Schema({
   url: String,
   isChecked: { type: Boolean, default: false },
 });
 const Url21 = mongoose.model('Url21', urlSchema);
+
+
+
+// const urlSchema = new mongoose.Schema({
+// Main_url: {
+//   type: String,
+//   required: true,
+// },
+// urls: [{
+//   url: {
+//     type: String,
+//     required: true,
+//   },
+//   isChecked: {
+//     type: Boolean,
+//     default: false,
+//   },
+// }],
+// });
+
 
 //SCRAPER API CALL FOR FIRST STEP
 
@@ -75,17 +97,13 @@ fs.readFile('output.txt', 'utf8', async (err, data) => {
       
       const newData = new Url21({ url: line });
       await newData.save();
-      console.log('Saved:', line);
+      // console.log('Saved:', line);
     } catch (error) {
       console.error('Error saving data to MongoDB:', error);
     }
   }
 });
   }
-
-  
-      //storedata();
-      
 
  
 //STORE JSON DATA AT /URLS FROM OUTPUT.TXT FILE
@@ -104,14 +122,26 @@ app.get('/urls', async(req, res) => {
   }
 });
 
+
+//API HIT FOR MONGO DB DATABASE FOR TRUE VALUE 
 app.put('/api/update-ischecked', async (req, res) => {
   const url = req.body.url;
   const isChecked = req.body.isChecked;
-  console.log("url is checked", url);
-  console.log("is checked", isChecked)
+  // console.log("url is checked", url);
+  // console.log("is checked", isChecked)
   try {
     const updatedUrl = await Url21.findOneAndUpdate({ url }, { isChecked }, { new: true });
+    
     res.json(updatedUrl);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/get-checked-urls', async (req, res) => {
+  try {
+    const checkedUrls = await Url21.find({ isChecked: true });
+    res.json(checkedUrls);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -119,7 +149,6 @@ app.put('/api/update-ischecked', async (req, res) => {
 
 
 // SCRAPES API CALL FOR SECOND PART
-
 app.post('/scrapes', async (req, res) => {
   const { urls, selectors } = req.body;
   let pages = [];
@@ -141,11 +170,8 @@ app.post('/scrapes', async (req, res) => {
       });
       pageData[selector] = values;
     });
-
     pages.push(pageData);
   }
-   
-
   fs.writeFileSync('./data.json', JSON.stringify(pages), 'utf-8');
 
   const tableString = getTableString(pages);

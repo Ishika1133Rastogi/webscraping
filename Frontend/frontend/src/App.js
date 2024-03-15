@@ -1,345 +1,8 @@
-// import React, { useState,useEffect, useRef } from 'react';
-// import axios from 'axios';
-// import * as html2pdf from 'html2pdf.js';
-// import './form.css';
-
-
-// const ProgressBar = ({ activeFieldset }) => (
-//   <ul id="progressbar">
-//     <li className={activeFieldset === 1 ? 'active' : ''}>URL EXTRACTION</li>
-//     <li className={activeFieldset === 2 ? 'active' : ''}>SCRAPING</li>
-//     <li className={activeFieldset === 3 ? 'active' : ''}>EXTRACTED DATA</li>
-//   </ul>
-// );
-
-// const Fieldset = ({ title, subtitle, children, style }) => (
-//   <fieldset style={style}>
-//     <h2 className="fs-title">{title}</h2>
-//     <h3 className="fs-subtitle">{subtitle}</h3>
-//     {children}
-//   </fieldset>
-// );
-
-// const App = () => {
-//   const [url, setUrl] = useState('');
-//   const [urls, setUrls] = useState([]);
-//   const [displayUrls, setDisplayUrls] = useState(false);
-//   const [activeFieldset, setActiveFieldset] = useState(1);
-// const [output, setOutput] = useState('');
-//   const preRef = useRef(null);
-//   const [formData, setFormData] = useState({
-//     text2: '',
-//     text3: '',
-//   });
-  
-//   const [extractedoutput, setExtractedoutput] = useState('');
-//   const [displayExtractedoutput, setDisplayExtractedoutput] = useState(false);
-
-//     const handleDownloadPDF = () => {
-//     const tempContainer = document.createElement('div');
-//     tempContainer.style.display = 'none';
-    
-//     const element = document.querySelector('.url-container');
-//     const pdfOptions = {
-//       margin: 10,
-//       filename: 'output.pdf',
-//       // image: { type: 'jpeg', quality: 1 },
-//       html2canvas: { scale: 2 },
-//       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-       
-//     };
-//     html2pdf().from(element).set(pdfOptions).save();
-    
-//   };
- 
- 
-//   const handleInputChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
- 
-//   const handlePrevious = () => {
-//     setActiveFieldset((prevActiveFieldset) => prevActiveFieldset - 1);
-//   };
-//   const handleNext = () => {
-//     setActiveFieldset((prevActiveFieldset) => prevActiveFieldset + 1);
-//   };
-
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try{
-//       const response = await axios.post('http://localhost:5002/scrape', { url });
-//       const scrapedUrls = response.data.urls || [];
-//       setUrls(scrapedUrls);   
-//       setDisplayUrls(true);
-//       setOutput(response.data.urls);
-//     } catch (error) {
-//       console.error('Error scraping URL:', error);
-//     }
-    
-//   };
-  
-
-//     return (
-//     <div>
-//       <form id="msform" onSubmit={handleSubmit}>
-//         <ProgressBar activeFieldset={activeFieldset} />
-//         <Fieldset style={{ display: activeFieldset === 1 ? 'block' : 'none' }}>
-//           <h2 className="fs-title">Provide the Main URL</h2>
-//           <h3 className="fs-subtitle">This step will provide the list of all URLs</h3>
-//           <input
-//             type="text"
-//             name="email"
-//             value={url}
-//             placeholder="Main URL"
-//             onChange={(e) => setUrl(e.target.value)}
-//           />
-//             <button type="button" className="download action-button" onClick={handleDownloadPDF}>
-//               Download
-//             </button>
-//             <button type="submit" className="previous action-button">
-//             Submit
-//           </button>
-//             <button type="button" className="next action-button" onClick={handleNext}>
-//             Next
-//           </button>
-      
-        
-//         <div title="Extracted URLs" style={{ display: 'block' }}  className="url-container">
-//         <ul className="url-list">
-//         {urls.map((url, index) => (
-//           <li key={index} className="url-item">
-//             <a href={url} target="_blank" rel="noopener noreferrer" className="url-link">{url}</a>
-//           </li>
-//         ))}
-//       </ul>
-//       </div>
-//           </Fieldset>
-      
-
-//         <Fieldset style={{ display: activeFieldset === 2 ? 'block' : 'none' }}>
-//           <h2 className="fs-title">SCRAPING STAGE</h2>
-//           <h3 className="fs-subtitle">Enter the URL and the selector that you want to scrape</h3>
-//           <input
-//             type="text"
-//             name="text2"
-//             placeholder="Scrape this URL"
-//             value={formData.text2}
-//             onChange={handleInputChange}
-//           />
-//           <input
-//           type="text"
-//           name="text3"
-//           placeholder="Selector"
-//           value={formData.text3}
-//           onChange={handleInputChange}
-//         />
-//           <button type="button" className="previous action-button" onClick={handlePrevious}>
-//             Previous
-//           </button>
-//           <button type="submit" className="submit action-button">
-//             Submit
-//           </button>
-//         </Fieldset>
- 
-//         {activeFieldset === 3 && (
-//           <Fieldset title="Extraction Results" style={{ display: 'block' }}>
-//             <button type="button" className="previous action-button" onClick={handlePrevious}>
-//               Previous
-//             </button>
-//             {displayExtractedoutput && <pre>{extractedoutput}</pre>}
-//           </Fieldset>
-//         )}
-    
-        
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default App;
-
-/*import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "./form.css";
-const ProgressBar = ({ activeFieldset }) => (
-  <ul id="progressbar">
-    <li className={activeFieldset === 1 ? "active" : ""}>URL EXTRACTION</li>
-    <li className={activeFieldset === 2 ? "active" : ""}>SCRAPING</li>
-    <li className={activeFieldset === 3 ? "active" : ""}>EXTRACTED DATA</li>
-  </ul>
-);
-const Fieldset = ({ title, subtitle, children, style }) => (
-  <fieldset style={style}>
-    <h2 className="fs-title">{title}</h2>
-    <h3 className="fs-subtitle">{subtitle}</h3>
-    {children}{" "}
-  </fieldset>
-);
-const App = () => {
-  const [url, setUrl] = useState("");
-  const [urls, setUrls] = useState([]);
-  const [displayUrls, setDisplayUrls] = useState(false);
-  const [activeFieldset, setActiveFieldset] = useState(1);
-  const [formData, setFormData] = useState({ text2: "", text3: "" });
-  const [extractedContent, setExtractedContent] = useState("");
-  const [displayExtractedContent, setDisplayExtractedContent] = useState(false);
-  const downloadPDF = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/generate-pdf");
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "data.pdf");
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    } catch (error) {
-      console.error("Error downloading PDF:", error);
-    }
-  };
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-  const handlePrevious = () => {
-    setActiveFieldset((prevActiveFieldset) => prevActiveFieldset - 1);
-  };
-  const handleNext = () => {
-    setActiveFieldset((prevActiveFieldset) => prevActiveFieldset + 1);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:5000/scrape", {
-        url,
-      });
-      const scrapedUrls = response.data.urls || [];
-      setUrls(scrapedUrls);
-    } catch (error) {
-      console.error("Error scraping URL:", error);
-    }
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/scrape');
-        setUrls(response.data);
-        setDisplayUrls(true);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  return (
-    <div>
-      <form id="msform" onSubmit={handleSubmit}>
-        <ProgressBar activeFieldset={activeFieldset} />
-        <Fieldset style={{ display: activeFieldset === 1 ? "block" : "none" }}>
-          <h2 className="fs-title">Provide the Main URL</h2>
-          <h3 className="fs-subtitle">
-            This step will provide the list of all URLs
-          </h3>
-          <input
-            type="text"
-            name="email"
-            value={url}
-            placeholder="Main URL"
-            onChange={(e) => setUrl(e.target.value)}
-          />
-          <button
-            type="button"
-            className="download action-button"
-            onClick={downloadPDF}
-          >
-            Download
-          </button>
-          <button type="submit" className="previous action-button">
-            Submit
-          </button>
-          <button
-            type="button"
-            className="next action-button"
-            onClick={handleNext}
-          >
-         Next
-          </button>
-        <div title="Extracted URLs" style={{ display: 'block' }}> 
-        {displayUrls && (
-          <div>
-          {displayUrls && (
-            <div style={{ height: '200px', overflowY: 'scroll' }}>
-              <ul>
-                {urls.map((url, index) => (
-                  <li key={index}>
-                    <a href={url.url} target="_blank" rel="noopener noreferrer">
-                      {url.url}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-        )}
-        </div>
-         </Fieldset>
-        <Fieldset style={{ display: activeFieldset === 2 ? "block" : "none" }}>
-          <h2 className="fs-title">SCRAPING STAGE</h2>
-          <h3 className="fs-subtitle">
-            Enter the URL and the selector that you want to scrape
-          </h3>
-          <input
-            type="text"
-            name="text2"
-            placeholder="Scrape this URL"
-            value={formData.text2}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="text3"
-            placeholder="Selector"
-            value={formData.text3}
-            onChange={handleInputChange}
-          />
-          <button
-            type="button"
-            className="previous action-button"
-            onClick={handlePrevious}
-          >
-            {" "}
-            Previous{" "}
-          </button>
-          <button type="submit" className="submit action-button">
-            {" "}
-            Submit{" "}
-          </button>
-        </Fieldset>{" "}
-        {activeFieldset === 3 && (
-          <Fieldset title="Extraction Results" style={{ display: "block" }}>
-            <button
-              type="button"
-              className="previous action-button"
-              onClick={handlePrevious}
-            >
-              {" "}
-              Previous{" "}
-            </button>
-            {displayExtractedContent && <pre>{extractedContent}</pre>}
-          </Fieldset>
-        )}
-      </form>
-    </div>
-  );
-};
-export default App;
-*/
 import React, { useState,useEffect,useRef } from 'react'; 
 import axios from 'axios'; 
 import * as html2pdf from 'html2pdf.js'; 
+
+
 // import { BASE_URL } from './helper';
 import './form.css'; 
 
@@ -387,13 +50,37 @@ const ProgressBar = ({ activeFieldset }) => (
       const [loading, setLoading] = useState('');
       const [showUrlWarning, setShowUrlWarning] = useState(false); 
       const [flag, setFlag] = useState(false);
+      const [flag2, setFlag2] = useState(false);
+      const [fetchData, setFetchData] = useState(false);
+
+      const [checkedUrls, setCheckedUrls] = useState({});
+      const [checkedUrls2, setCheckedUrls2] = useState([]);
+
      
+
       const isUrlValid = (userInput) => {
       const res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g);
         return res !== null;
       };
 
-           
+      const handleCheckboxChange = async(url) => {
+        const newCheckedUrls = {
+          ...checkedUrls,
+          [url]: !checkedUrls[url],
+        };
+        setCheckedUrls(newCheckedUrls);
+
+    try {
+      await axios.put(`http://localhost:5002/api/update-ischecked`, {url,  isChecked: newCheckedUrls[url] });
+      console.log(`Updated isChecked for ${url}`);
+    
+    } catch (error) {
+      console.error('Error updating isChecked:', error);
+    }
+      };
+
+     //API FOR FETCH TRUE VALUES FROM MONGO
+     
 
       // const fetchData = async () => {
       //   if (isUrlValid(url)) {
@@ -410,7 +97,7 @@ const ProgressBar = ({ activeFieldset }) => (
       // };
 
       useEffect(()=>{   
-        // console.log("hello123")
+        console.log("hello123")
              
         if (url.trim() !== ''){
         try{
@@ -427,17 +114,41 @@ const ProgressBar = ({ activeFieldset }) => (
            
       }, [flag])
 
+      const fetchCheckedUrls = async () => {
+        try {
+          const response = await axios.get('http://localhost:5002/api/get-checked-urls');
+          setCheckedUrls2(response.data);
+        } catch (error) {
+          console.error('Error fetching checked URLs:', error);
+        }
+      };
+
+      // useEffect(() => {
+      //   const fetchCheckedUrls = async () => {
+      //     console.log("hemlo123")
+      //     try {
+      //       const response = await axios.get('http://localhost:5002/api/get-checked-urls');
+      //       setCheckedUrls(response.data);
+      //     } catch (error) {
+      //       console.error('Error fetching checked URLs:', error);
+      //     }
+      //   };
+    
+      //   fetchCheckedUrls();
+      // }, [flag2]);
       
       const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
          const response = await axios.post('http://localhost:5002/scrape', {url},
-          {
-            timeout:500000,
-          }); 
+          // {
+          //   timeout:500000,
+          // }
+          ); 
           console.log("Response:", response);
           
-          const myTimeout = setTimeout(myGreeting, 60000);
+          const myTimeout = setTimeout(myGreeting, 30000);
           
           function myGreeting() {
             setFlag((prev)=>!prev)
@@ -453,6 +164,9 @@ const ProgressBar = ({ activeFieldset }) => (
           // fetchData();
           // setOutput(response.data.urls);
       }catch(err){console.log("app")}
+      finally {
+        setLoading(false); 
+      }
         
       };
       
@@ -482,8 +196,12 @@ const ProgressBar = ({ activeFieldset }) => (
       html2pdf(element, pdfOptions);
     };
     
-      const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+      const handleInputChange = (value, index) => {
+        
+        // setFo/rmData({ ...formData, [e.target.name]: e.target.value });
+        const newSelectors = [...selectors];
+        newSelectors[index] = value;
+        setSelectors(newSelectors);
       };
      
       const handlePrevious = () => {
@@ -491,9 +209,17 @@ const ProgressBar = ({ activeFieldset }) => (
       };
       const handleNext = () => {
         setActiveFieldset((prevActiveFieldset) => prevActiveFieldset + 1);
+        setFetchData(true);
       };
       
-     
+      useEffect(() => {
+        console.log("hina")
+    if (fetchData) {
+      fetchCheckedUrls();
+      setFetchData(false);
+    }
+  }, [fetchData]);
+
       
       // const handleSubmit2 = async (e) => {
       //   e.preventDefault();
@@ -553,14 +279,16 @@ const ProgressBar = ({ activeFieldset }) => (
             <button type="button" className="download action-button" onClick={handleDownloadPDF}>
               Download
             </button>
-            <button type="submit" className="submit action-button" onClick={handleSubmit}>
+            <button type="submit" className="submit action-button" onClick={handleSubmit} >
             Submit
           </button>
+          
           <button
           type="button"
           className="next action-button"
           onClick={handleNext}
           disabled={!url || showUrlWarning}
+          
         >
           Next
      </button>
@@ -570,6 +298,12 @@ const ProgressBar = ({ activeFieldset }) => (
             <ul className="url-list">
               {data.map((url, index) => (
                 <li key={index} className="url-item">
+                <input
+                type="checkbox"
+                id={url}
+                checked={checkedUrls[url] || false}
+                onChange={() => handleCheckboxChange(url)}
+              />
                 <a href={url} target="_blank" rel="noopener noreferrer" className="url-link">{url}</a>
         </li>
               ))}
@@ -579,33 +313,40 @@ const ProgressBar = ({ activeFieldset }) => (
           </Fieldset>
 
           <Fieldset style={{ display: activeFieldset === 2  ? 'block' : 'none' }}>
-       <h2 className="fs-title">SCRAPING STAGE</h2>
-        <h3 className="fs-subtitle">Enter the URL and the selector that you want to scrape</h3>
-        <input
-        type="text"
-        value={urls}
-        placeholder="Enter URL to scrape"
-        onChange={(e) => {
-        setUrls(e.target.value);
-        setShowUrlWarning(!isUrlValid(e.target.value));
-        }}
-      />
-        <input type="text" placeholder="Selectors" value={selectors} onChange={(e) => setSelectors(e.target.value)} />
-        {showUrlWarning && <p style={{ color: 'red' }}>Please enter a valid URL.</p>}
-        <button type="button" className="previous action-button" onClick={handlePrevious} >
+          <h2 className="fs-title">Checked urls STAGE</h2>
+          <h3 className="fs-subtitle">Enter the URL and the selector that you want to scrape</h3>
+          <div>
+          
+         <div className='checked_urls'>
+          {checkedUrls2.map((url, index) => (
+           <div className="url-list2" key={index} style={{marginTop:"50px"}}>
+           <a href={url.url} target="_blank" rel="noopener noreferrer" className="url-link2">{url.url}</a>
+           <input style={{marginTop:"30px"}} type='text' placeholder="Selectors" value={selectors[index] || ''} onChange={(e) => handleInputChange(e.target.value, index)}/>         
+
+         </div>
+          ))}
+          </div>
+          
+          </div>
+          
+
+    
+    <button type="button" className="previous action-button" onClick={handlePrevious} >
         Previous
         </button>
+        
         <button
-        type="submit"
-        className="submit action-button"
-        onClick={handleSubmit2}
-        disabled={!urls || !selectors || showUrlWarning || loading}>
-         {loading ? 'Loading...' : 'Submit'}
-        </button>
-        </Fieldset>
- 
+          type="button"
+          className="next action-button"
+          onClick={handleNext}
+          disabled={!url || !selectors || showUrlWarning ||loading}>
      
-        <Fieldset style={{ display: activeFieldset === 3 ? 'block' : 'none' }}>
+        
+          Next
+     </button>
+          </Fieldset>
+
+        <Fieldset style={{ display: activeFieldset === 4 ? 'block' : 'none' }}>
         <h2 className="fs-title">EXTRACTED DATA</h2>
         <div className="result" style={{maxHeight: '300px', textAlign:'left', maxWidth:'800px', overflow: 'auto', margin: '0 auto'}} >
           <pre ref={preRef}>{output}</pre>
@@ -617,8 +358,7 @@ const ProgressBar = ({ activeFieldset }) => (
           type="button"
           className="next action-button"
           onClick={handleDownloadPDF2}
-            disabled={!output.trim()}
-         
+            disabled={!output.trim()}        
         >
           Download
         </button>

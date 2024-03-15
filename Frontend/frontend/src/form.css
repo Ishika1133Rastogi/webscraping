@@ -134,6 +134,61 @@ body {
   .url-link:hover {
     color: darkblue;
   }
+
+  .url-list2{
+    background: white;
+    border: 0 none;
+    border-radius: 0px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 80%;
+    margin: 0 10%;
+    position: relative;
+}
+
+
+
+ 
+.url-list{
+    background: white;
+    border: 0 none;
+    border-radius: 0px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 80%;
+    margin: 0 10%;
+    position: relative;
+    color:#5c046c;
+}
+ 
+ 
+.url-link{
+ -ms-word-break: break-all;
+  word-break: break-all;
+  white-space: pre-wrap
+}
+ 
+ 
+ 
+ 
+.url-box {
+    display: inline-block;
+    padding: 10px;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    background-color: #000000;
+  }
+ 
+  .url-link2 {
+    text-decoration: none;
+    color: #6b0f96;
+  }
+ 
+  .url-link2:hover {
+    color: #1a0225;
+  }
  
 /* CSS for the scraped URLs section */
 .scraped-urls-container {
