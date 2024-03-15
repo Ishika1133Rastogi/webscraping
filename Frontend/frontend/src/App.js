@@ -386,6 +386,7 @@ const ProgressBar = ({ activeFieldset }) => (
       const [selectors, setSelectors] = useState(''); 
       const [loading, setLoading] = useState('');
       const [showUrlWarning, setShowUrlWarning] = useState(false); 
+      const [flag, setFlag] = useState(false);
      
       const isUrlValid = (userInput) => {
       const res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g);
@@ -409,11 +410,13 @@ const ProgressBar = ({ activeFieldset }) => (
       // };
 
       useEffect(()=>{   
-            if(isUrlValid(url)){ 
+        // console.log("hello123")
+             
         if (url.trim() !== ''){
         try{
         axios.get('http://localhost:5002/urls')
         .then((res)=>{
+          console.log(res.data);
           setData(Array.from(res.data.urls)||[]);
           setDisplayUrls(true);
          })
@@ -421,8 +424,8 @@ const ProgressBar = ({ activeFieldset }) => (
                 console.error('Error fetching data:', error);
               }
             }
-          }  
-      }, [url])
+           
+      }, [flag])
 
       
       const handleSubmit = async (e) => {
@@ -433,6 +436,16 @@ const ProgressBar = ({ activeFieldset }) => (
             timeout:500000,
           }); 
           console.log("Response:", response);
+          
+          const myTimeout = setTimeout(myGreeting, 60000);
+          
+          function myGreeting() {
+            setFlag((prev)=>!prev)
+          }
+
+          function myStopFunction() {
+              clearTimeout(myTimeout);
+          }
           // const scrapedUrls =Array.from( response.data.urls) || [];
           // setData(scrapedUrls);
           setDisplayUrls(true);

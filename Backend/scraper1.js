@@ -196,9 +196,7 @@ async function scrap(url, parent = null, baseUrl, visitedUrls) {
                  childUrls.push(childUrl.href);
                 await scrap(childUrl.href, absoluteUrl.href, baseUrl, visitedUrls);
               }
-              
           }
-          
       });
       // return childUrls;
       return childUrls;
@@ -207,8 +205,6 @@ async function scrap(url, parent = null, baseUrl, visitedUrls) {
       // console.error('Error scraping URL123:', error);
   }
 }
-
-
 module.exports = scrap
 
 
