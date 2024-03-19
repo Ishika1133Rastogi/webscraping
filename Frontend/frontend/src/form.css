@@ -109,13 +109,13 @@ body {
     padding-left: 20px; /* Added padding for left alignment */
 }
 
-.url-list {
+.url-list1 {
     list-style-type: none;
     overflow-wrap: break-word;
     padding: 0;
 }
 
-.url-item {
+.url-item1{
     text-align: left;
     margin-bottom: 10px;
     word-wrap: break-word; /* Wrap long URLs */
@@ -124,14 +124,14 @@ body {
 
  
   /* Styles for the anchor tag */
-  .url-link {
+  .url-link1 {
     color: rgba(4, 4, 34, 0.938);
     text-decoration: underline;
     cursor: pointer;
   }
  
   /* Hover effect for the anchor tag */
-  .url-link:hover {
+  .url-link1:hover {
     color: darkblue;
   }
 
@@ -150,7 +150,7 @@ body {
 
 
  
-.url-list{
+.url-list2{
     background: white;
     border: 0 none;
     border-radius: 0px;
@@ -164,7 +164,7 @@ body {
 }
  
  
-.url-link{
+.url-link2{
  -ms-word-break: break-all;
   word-break: break-all;
   white-space: pre-wrap
@@ -173,13 +173,13 @@ body {
  
  
  
-.url-box {
+/* .url-box {
     display: inline-block;
     padding: 10px;
     border: 2px solid #000000;
     border-radius: 5px;
     background-color: #000000;
-  }
+  } */
  
   .url-link2 {
     text-decoration: none;
