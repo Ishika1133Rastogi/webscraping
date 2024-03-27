@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://quotes.toscrape.com/author/J-K-Rowling",
+    "data": [
+      {
+        "span.text": []
+      }
+    ]
+  },
+  {
+    "url": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+    "data": [
+      {
+        "span.text": [
+          "“The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.”"
+        ]
+      }
+    ]
+  }
+]
