@@ -126,53 +126,142 @@ const Base2 = mongoose.model('Base2', baseSchema);
 //     return [];
 //   }
 // }
+//......................................................................................................................................
+// async function scrap(url, parent = null, baseUrl, visitedUrls) {
+//   try {
+//     const absoluteUrl = new URL(url, baseUrl);
 
-async function scrap(url, parent = null, baseUrl, visitedUrls) {
+//     if (visitedUrls.includes(absoluteUrl.href)) {
+//       console.log("Url length", visitedUrls.length)
+//       return { url: absoluteUrl.href, status: 'skipped' };
+//     } else {
+//       visitedUrls.push(absoluteUrl.href);
+
+//       await Base2.updateOne({ BASE_URL: baseUrl }, {
+//         $push: { scrapedData: { url: absoluteUrl.href, isChecked: false, timestamp: Date.now() } }
+//       }, { upsert: true });
+
+//       const response = await axios.get(absoluteUrl.href);
+//       const $ = cheerio.load(response.data);
+
+//       let lastProcessedUrl = null;
+
+//       for (let i = 0; i < $('a').length; i++) {
+//         const element = $('a')[i];
+//         const href = $(element).attr('href');
+//         if (href) {
+//           const childUrl = new URL(href, absoluteUrl);
+//           if (childUrl.hostname === baseUrl.hostname) {
+//             lastProcessedUrl = await scrap(childUrl.href, absoluteUrl.href, baseUrl, visitedUrls);
+//           }
+//         }
+//       }
+
+//       console.log(visitedUrls.length)
+//       if (lastProcessedUrl) {
+//         return lastProcessedUrl;
+//       } else {
+//         return { url: absoluteUrl.href, status: 'processed' };
+//       }
+//     }
+//   } catch (error) {
+//     return { url: url, status: 'error' };
+//   }
+// }
+// const url = "https://quotes.toscrape.com/";
+// scrap(url, null, new URL(url), [])
+//   .then(result => console.log(result))
+//   .catch(error => console.error(error));
+//....................................................................................................................................
+
+
+// const express = require('express');
+// const axios = require('axios');
+// const cheerio = require('cheerio'); 
+// const app = express();
+// const cors = require('cors');
+// const bodyParser = require('body-parser');
+// const fs = require('fs'); 
+// require('dotenv').config(); 
+// app.use(cors()); 
+// app.use(express.urlencoded({ extended: true })); 
+// app.use(express.json()); 
+// PORT =5002; 
+// app.use(bodyParser.json()); 
+// app.use(cors()) 
+
+const mongoose = require('mongoose');
+
+const scrapedDataSchema = new mongoose.Schema({
+  url: {type:String,unique:true},
+  isChecked: { type: Boolean, default: false },
+  timestamp: { type: Date, default: Date.now }
+});
+
+const baseSchema = new mongoose.Schema({
+  BASE_URL: {
+    type: String,
+    unique: true
+  },
+  scrapedData: [scrapedDataSchema]
+});
+
+const Base2 = mongoose.model('Base2', baseSchema);
+
+
+let visitedUrls = [];
+
+async function scrap(url, parent = null, baseUrl) {
   try {
     const absoluteUrl = new URL(url, baseUrl);
 
     if (visitedUrls.includes(absoluteUrl.href)) {
-      console.log("Url length", visitedUrls.length)
-      return { url: absoluteUrl.href, status: 'skipped' };
-    } else {
-      visitedUrls.push(absoluteUrl.href);
+      console.log("Url already visited:", absoluteUrl.href);
+      return;
+    }
 
-      await Base2.updateOne({ BASE_URL: baseUrl }, {
-        $push: { scrapedData: { url: absoluteUrl.href, isChecked: false, timestamp: Date.now() } }
-      }, { upsert: true });
+    visitedUrls.push({url:absoluteUrl.href,
+  isChecked:false
+  });
 
-      const response = await axios.get(absoluteUrl.href);
-      const $ = cheerio.load(response.data);
+    if (visitedUrls.length >= 100) {
+      await storeVisitedUrls(baseUrl, visitedUrls);
+      visitedUrls = [];
+    }
 
-      let lastProcessedUrl = null;
+    const response = await axios.get(absoluteUrl.href);
+    const $ = cheerio.load(response.data);
 
-      for (let i = 0; i < $('a').length; i++) {
-        const element = $('a')[i];
-        const href = $(element).attr('href');
-        if (href) {
-          const childUrl = new URL(href, absoluteUrl);
-          if (childUrl.hostname === baseUrl.hostname) {
-            lastProcessedUrl = await scrap(childUrl.href, absoluteUrl.href, baseUrl, visitedUrls);
-          }
+    $('a').each(async (index, element) => {
+      const href = $(element).attr('href');
+      if (href) {
+        const childUrl = new URL(href, absoluteUrl);
+        if (childUrl.hostname === baseUrl.hostname) {
+          await scrap(childUrl.href, absoluteUrl.href, baseUrl);
         }
       }
+    });
 
-      console.log(visitedUrls.length)
-      if (lastProcessedUrl) {
-        return lastProcessedUrl;
-      } else {
-        return { url: absoluteUrl.href, status: 'processed' };
-      }
-    }
   } catch (error) {
-    return { url: url, status: 'error' };
+    console.error("Error scraping URL:", url, error);
   }
 }
-const url = "https://quotes.toscrape.com/";
-scrap(url, null, new URL(url), [])
-  .then(result => console.log(result))
-  .catch(error => console.error(error));
-
+async function storeVisitedUrls(baseUrl, visitedUrls) {
+  try {
+    for (const url1 of visitedUrls) {
+      const existingUrl = await Base2.findOne({ BASE_URL: baseUrl, 'scrapedData.url': url1.url });
+      if (!existingUrl) {
+        await Base2.updateOne({ BASE_URL: baseUrl }, {
+          $push: { scrapedData: url1}
+        }, { upsert: true });
+      }
+    }
+    visitedUrls=[]
+    console.log("Stored 100 URLs in the database for base URL:", baseUrl);
+  } catch (error) {
+    console.error("Error storing visited URLs in the database:", error);
+  }
+}
 
 module.exports = scrap;
 
